@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrambled Password</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: OCR-A, monospace;
+            color: green;
+        }
+
+        input {
+            font: inherit;
+            font-size: 18px;
+            padding: 10px;
+            border-bottom: solid 2px #c9c9c9;
+            border: none;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+        }
+
+        .correct[type="text"] {
+            color: green;
+        }
+
+        .correct {
+            border-bottom: solid 2px green !important;
+        }
+
+        .error[type="text"] {
+            color: red;
+        }
+
+        .error {
+            border-bottom: solid 2px red !important;
+        }
+
+        @keyframes curser {
+            from {border-right: solid 10px green;}
+            to {border-right: solid 10px transparent;}
+        }
+
+        div {
+            margin: 10px;
+        }
+
+        .scrambled {
+            display: inline-block;
+            border-right: solid 10px white;
+            padding-right: 2px;
+            animation-name: curser;
+            animation-duration: 1s;
+            animation-iteration-count: infinite;
+        }
+
+        .message-box {
+            width: 500px;
+            margin: 0 auto;
+            margin-top: 100px;
+        }
+
+        .textbox {
+            overflow: auto;
+            white-space: nowrap;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 117.99px);
+            padding: 10px;
+            border-bottom: solid 2px #c9c9c9;
+            display: inline-block;
+        }
+
+        #decrypt {
+            display: inline-block;
+            width: 98px;
+            font: inherit;
+            border: none;
+            color: black;
+            background-color: white;
+            font-size: 18px;
+            padding: 10px;
+            text-align: center;
+            border-bottom: solid 2px #c9c9c9;
+            border-left: solid 2px #c9c9c9;
+            text-shadow: none !important;
+            box-shadow: none !important;
+        }
+
+        #decrypt:focus {
+            outline: none;
+        }
+
+        #decrypt:hover {
+            color: white;
+            background-color: black;
+        }
+
+        .shake {
+            animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        @keyframes shake {
+            10%, 90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+            20%, 80% {
+                transform: translate3d(2px, 0, 0);
+            }
+            30%, 50%, 70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+            40%, 60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        .file {
+            display: none;
+            margin: 0;
+            width: 100%;
+            height: auto;
+            border: solid 2px green;
+        }
+
+        .file > .title {
+            margin: 0px;
+            width: 100%;
+            height: 40px;
+            border-bottom: solid 2px green;
+        }
+
+        .file > .contents {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="message-box">
+        <div class="directions">Directions: This is a scrambled password with 10 characters. You have 6 wrong letters per hour to decrypt it. Good Luck!</div>
+        <div class="scrambled"><span>Scrambled Password: </span></div>
+        <div class="tries">Tries Left: <span></span></div>
+        <div id="textbox">
+            <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text" id="password"/>
+            <button type="button" id="decrypt">Decrypt</button>
+        </div>
+        <div class="file">
+            <div class="title">
+                <span style="float: left; margin: 10px;">HawkVision</span>
+                <span style="float: right; margin: 10px;">*Classified*</span>
+            </div>
+            <div class="contents">
+                Name&nbsp;: Kevin **** 
+                <br>
+                Rank&nbsp;: CIA Analyst (lv. 5 Clearance)
+                <br>
+                Level : 3
+                <br>
+                Date&nbsp;: [7/2/2013]
+                <br><br>
+                Description:
+                <br>
+                This program was originally designed by the Black Hat hacker 4ntr0n. Later seized by the NSA, his work was modified to spy on enemy hackers. They used it to infect entire networks and hostile computers to create a spider web of connections. This gave the user more time in enemy cyberspace before being tracked down. Think of it as the ultimate VPN! The only caveat being that the user's activity was logged on every connected computer. The program was later shut down in 2012 after a cyber black ops mission was compromised due to this shortcoming. It resulted in a major data leak, ending with the confirmed death of 6 CIA agents and 3 more M.I.A.
+                <br><br>
+                Till this bug can be fixed, HawkVision has been retired and is currently stored at 1.56.7.80.
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var p = "efil4owtHS".split("").reverse().join(""); // password
+
+        function call(f) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return f.apply(this, args);
+        }
+
+        function scramble(t) {
+            var r = t.split('').sort(function () { return 0.5 - Math.random(); }).join(''); // BY - Joel Mellon
+            if (r == t)
+                return scramble(t);
+            return r;
+        }
+
+        function type(t, speed, elm) {
+            for (var i in t) {
+                call(function (e, l, time) {
+                    setTimeout(function () { $(e).append(l); }, time);
+                }, elm, t[i], (speed * i));
+            }
+        }
+
+        type(scramble(p), 100, $(".scrambled"));
+
+        function check(t, p) {
+            var c = 0;
+            if (!t.length) { return ""; }
+            for (var i in t) { if (t[i] == p[i]) { c++; } else { continue; } }
+            return ((t.length == c) ? "correct" : "error");
+        }
+
+        var tries = 6;
+        $(".tries span").text(tries--);
+        $("#password").bind("keyup", function (e) {
+            var c = check($(this).val(), p);
+            $("#password, #decrypt").attr("class", c);
+            if ((e.which <= 90 && e.which >= 48) && (c == "error")) {
+                $(".tries span").text(tries--);
+            } else if (e.keyCode == 13) {
+                $("#decrypt").click();
+            }
+        });
+
+        $("#decrypt").bind("click", function () {
+            if ($("#password").val() == p) {
+                $(this).css("background-color", "green");
+                $(".file").show();
+            } else {
+                $("#textbox").addClass("shake");
+                setTimeout(function() {
+                    $("#textbox").removeClass("shake");
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
